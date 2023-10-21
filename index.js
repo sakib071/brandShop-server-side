@@ -84,7 +84,6 @@ async function run() {
             const item = req.body;
             console.log(item);
             const result = await cartCollection.insertOne(item);
-            // res.json({ message: 'Product added to cart' });
             res.send(result);
         })
         app.get('/cart', async (req, res) => {
@@ -117,3 +116,5 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Brand Shop server listening on ${port}`);
 })
+
+// https://technology-electronics-server-with-auth-q8ov57eni.vercel.app
