@@ -22,9 +22,11 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        await client.connect();
+        // await client.connect();
 
         const productCollection = client.db('productDB').collection('product');
+        const userCollection = client.db('productDB').collection('user');
+        const cartCollection = client.db('productDB').collection('cart');
 
         app.get('/product', async (req, res) => {
             const cursor = productCollection.find();
@@ -72,11 +74,33 @@ async function run() {
             const result = await productCollection.deleteOne(query);
             res.send(result);
         })
+        app.post('/user', async (req, res) => {
+            const user = req.body;
+            console.log(user);
+            const result = await userCollection.insertOne(user);
+            res.send(result);
+        })
+        app.post('/cart', async (req, res) => {
+            const item = req.body;
+            console.log(item);
+            const result = await cartCollection.insertOne(item);
+            // res.json({ message: 'Product added to cart' });
+            res.send(result);
+        })
+        app.get('/cart', async (req, res) => {
+            const cursor = cartCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+        app.delete('/cart/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await cartCollection.deleteOne(query);
+            res.send(result);
+        })
 
 
-
-        // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
